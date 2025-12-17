@@ -41,11 +41,16 @@ def predict_next_30_days(model, df):
     ma7, ma14, ma21, vol = last[['ma7','ma14','ma21','volatility']]
     close = last['Close']
 
-    preds = []
+    predictions = []
+
     for _ in range(30):
-        X = np.array([[ma7, ma14, ma21, vol]])
-        next_close = model.predict(X)[0]
-        preds.append(next_close)
+        X_pred = pd.DataFrame(
+            [[ma7, ma14, ma21, vol]],
+            columns=['ma7', 'ma14', 'ma21', 'volatility']
+        )
+
+        next_close = model.predict(X_pred)[0]
+        predictions.append(next_close)
 
         vol = (next_close - close) / close
         close = next_close
@@ -53,7 +58,8 @@ def predict_next_30_days(model, df):
         ma14 = (ma14 * 13 + next_close) / 14
         ma21 = (ma21 * 20 + next_close) / 21
 
-    return preds
+    return predictions
+
 
 future_prices = predict_next_30_days(model, df)
 future_dates = pd.date_range(df.index[-1], periods=30)

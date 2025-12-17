@@ -49,7 +49,8 @@ def predict_next_30_days(model, df):
             columns=['ma7', 'ma14', 'ma21', 'volatility']
         )
 
-        next_close = model.predict(X_pred)[0]
+        next_close = model.predict(X_pred, validate_features=False)[0]
+
         predictions.append(next_close)
 
         vol = (next_close - close) / close
